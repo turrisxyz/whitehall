@@ -3,6 +3,7 @@
     href: historic_appointment_path(role.historic_param, role_appointment.person),
     image_src: role_appointment.person.image_url(:s216),
     image_alt: role_appointment.person.name,
+    image_loading: "lazy",
     heading_text: role_appointment.person.name,
     description: "#{role_appointment.historical_account.try(:political_membership)} #{role_appointment.date_range}",
   } %>
