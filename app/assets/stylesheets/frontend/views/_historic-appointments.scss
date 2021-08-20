@@ -79,20 +79,28 @@
   }
 }
 
-.historical-past-chancellors {
-  .featured-profiles {
-    @include media(tablet) {
-      width: $full-width;
+.historical-past-chancellors__section-row {
+  .govuk-list {
+    // overwrite default
+    margin-bottom: 0;
+  }
+
+  .govuk-body {
+    color: $govuk-secondary-text-colour;
+
+    // Targets all of the years / periods of service but the last one.
+    &:nth-last-child(n+2) {
+      margin-bottom: 0;
     }
 
-    .year-block {
-      @include media(tablet) {
-        width: $one-quarter;
-      }
+    // Targets the last set of years in the list
+    @include govuk-responsive-margin(7, "bottom");
+  }
+}
 
-      .person-excerpt {
-        min-height: 0;
-      }
-    }
+.historic-people-index__section-row-header {
+  @include media(tablet) {
+    margin-top: govuk-spacing(2);
+    margin-bottom: govuk-spacing(4);
   }
 }
