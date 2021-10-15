@@ -272,17 +272,23 @@ class WorldLocationsControllerTest < ActionController::TestCase
       :world_location,
       world_location_type: WorldLocationType::InternationalDelegation,
     )
-    announcement2 = create(:published_news_article, world_locations: [world_location], first_published_at: 2.days.ago)
-    announcement3 = create(:published_speech, world_locations: [world_location], first_published_at: 3.days.ago)
-    announcement1 = create(:published_news_article, world_locations: [world_location], first_published_at: 1.day.ago)
+
+    create(:published_news_article, world_locations: [world_location], first_published_at: 1.day.ago)
+    create(:published_news_article, world_locations: [world_location], first_published_at: 2.days.ago)
+    create(:published_speech, world_locations: [world_location], first_published_at: 3.days.ago)
+
     get :show, params: { id: world_location }
+
     assert_select "#announcements" do
-      assert_select_object announcement1 do
-        assert_select ".publication-date time[datetime=?]", 1.day.ago.iso8601
-        assert_select ".document-type", "Press release"
+      assert_select ".gem-c-document-list__item:nth-child(1)" do
+        assert_select ".gem-c-document-list__attribute time[datetime=?]", 1.day.ago.iso8601
+        assert_select ".gem-c-document-list__attribute:nth-child(2)", "Press release"
       end
-      assert_select_object announcement2
-      refute_select_object announcement3
+      assert_select ".gem-c-document-list__item:nth-child(2)" do
+        assert_select ".gem-c-document-list__attribute time[datetime=?]", 2.days.ago.iso8601
+        assert_select ".gem-c-document-list__attribute:nth-child(2)", "Press release"
+      end
+      assert_select ".gem-c-document-list__item:nth-child(3)", false
       # There may be other args and we can't guarantee the order,
       # so just specify the bits we care about
       assert_select "a[href^='#{announcements_path}'][href*='world_locations%5B%5D=#{world_location.to_param}']"
@@ -307,17 +313,22 @@ class WorldLocationsControllerTest < ActionController::TestCase
       :world_location,
       world_location_type: WorldLocationType::InternationalDelegation,
     )
-    publication2 = create(:published_policy_paper, world_locations: [world_location], first_published_at: 2.days.ago.to_date)
-    publication3 = create(:published_policy_paper, world_locations: [world_location], first_published_at: 3.days.ago.to_date)
-    publication1 = create(:published_statistics, world_locations: [world_location], first_published_at: 1.day.ago.to_date)
+    create(:published_policy_paper, world_locations: [world_location], first_published_at: 3.days.ago)
+    create(:published_policy_paper, world_locations: [world_location], first_published_at: 2.days.ago)
+    create(:published_statistics, world_locations: [world_location], first_published_at: 1.day.ago)
+
     get :show, params: { id: world_location }
+
     assert_select "#publications" do
-      assert_select_object publication2 do
-        assert_select ".publication-date time[datetime=?]", 2.days.ago.midnight.iso8601
-        assert_select ".document-type", "Policy paper"
+      assert_select ".gem-c-document-list__item:nth-child(1)" do
+        assert_select ".gem-c-document-list__attribute time[datetime=?]", 2.days.ago.iso8601
+        assert_select ".gem-c-document-list__attribute:nth-child(2)", "Policy paper"
       end
-      assert_select_object publication3
-      refute_select_object publication1
+      assert_select ".gem-c-document-list__item:nth-child(2)" do
+        assert_select ".gem-c-document-list__attribute time[datetime=?]", 3.days.ago.iso8601
+        assert_select ".gem-c-document-list__attribute:nth-child(2)", "Policy paper"
+      end
+      assert_select ".gem-c-document-list__item:nth-child(3)", false
       assert_select "a[href='#{publications_filter_path(world_location)}']"
     end
   end
@@ -339,17 +350,22 @@ class WorldLocationsControllerTest < ActionController::TestCase
       :world_location,
       world_location_type: WorldLocationType::InternationalDelegation,
     )
-    publication2 = create(:published_statistics, world_locations: [world_location], first_published_at: 2.days.ago.to_date)
-    publication3 = create(:published_statistics, world_locations: [world_location], first_published_at: 3.days.ago.to_date)
-    publication1 = create(:published_national_statistics, world_locations: [world_location], first_published_at: 1.day.ago.to_date)
+    create(:published_national_statistics, world_locations: [world_location], first_published_at: 1.day.ago)
+    create(:published_statistics, world_locations: [world_location], first_published_at: 2.days.ago)
+    create(:published_statistics, world_locations: [world_location], first_published_at: 3.days.ago)
+
     get :show, params: { id: world_location }
+
     assert_select "#statistics-publications" do
-      assert_select_object publication1 do
-        assert_select ".publication-date time[datetime=?]", 1.day.ago.midnight.iso8601
-        assert_select ".document-type", "National Statistics"
+      assert_select ".gem-c-document-list__item:nth-child(1)" do
+        assert_select ".gem-c-document-list__attribute time[datetime=?]", 1.day.ago.iso8601
+        assert_select ".gem-c-document-list__attribute:nth-child(2)", "National Statistics"
       end
-      assert_select_object publication2
-      refute_select_object publication3
+      assert_select ".gem-c-document-list__item:nth-child(2)" do
+        assert_select ".gem-c-document-list__attribute time[datetime=?]", 2.days.ago.iso8601
+        assert_select ".gem-c-document-list__attribute:nth-child(2)", "Official Statistics"
+      end
+      assert_select ".gem-c-document-list__item:nth-child(3)", false
       assert_select "a[href=?]", publications_filter_path(world_location, publication_filter_option: "statistics")
     end
   end
