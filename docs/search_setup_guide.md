@@ -3,7 +3,7 @@
 ## Setup search locally
 
 The Whitehall app relies on
-[Rummager](https://github.com/alphagov/rummager) for document
+[search API](https://github.com/alphagov/search-api) for document
 indexing, and the
 [GOV.UK frontend application](https://github.com/alphagov/frontend) to
 serve results.
@@ -23,7 +23,7 @@ construction of a new detached index and seamless switchover from the
 existing to the new index. There are two parts to this process, a
 `rummager_export.rb` script in whitehall which dumps the whitehall data to
 STDOUT, and a `bulk_load` script in rummager which accepts that data on STDIN
-and loads it into rummager.
+and loads it into search API.
 
 The `bulk_load` script also takes care of constructing the new offline index,
 locking the index for writes (so that index write workers queue up waiting for
@@ -49,8 +49,8 @@ following task from the search-api repo:
     then
 
     ```
-    (cd ../rummager && bundle exec ./bin/bulk_load government) < government.dump
-    (cd ../rummager && bundle exec ./bin/bulk_load detailed) < detailed.dump
+    (cd ../search-api && bundle exec ./bin/bulk_load government) < government.dump
+    (cd ../search-api && bundle exec ./bin/bulk_load detailed) < detailed.dump
     ```
 
 ## Search indexing paths
