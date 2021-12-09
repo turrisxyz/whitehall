@@ -86,7 +86,7 @@ module Admin
                             .joins("LEFT OUTER JOIN statistics_announcement_dates sd2
                               ON (sd2.statistics_announcement_id = statistics_announcements.id
                               AND statistics_announcement_dates.created_at > sd2.created_at)")
-                            .group("statistics_announcement_dates.statistics_announcement_id")
+                            .group("statistics_announcement_dates.statistics_announcement_id, statistics_announcement_dates.release_date")
                             .page(options[:page])
     end
 
