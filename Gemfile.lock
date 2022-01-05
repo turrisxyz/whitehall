@@ -1,7 +1,7 @@
 GIT
   remote: git@github.com:alphagov/govspeak.git
-  revision: 607a48bd7d21b6ab3827b93bf74a8e10be9dc879
-  branch: abbr-in-footnotes-bugfix
+  revision: 6ac62655313a383e78305a0555cc8f198a19d4d1
+  branch: fix-bug
   specs:
     govspeak (6.7.7)
       actionview (>= 5.0, < 7)
