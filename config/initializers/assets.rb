@@ -35,5 +35,6 @@ Rails.application.config.assets.precompile += %w[
   frontend/html-publication-rtl-ie7.css
   frontend/html-publication-rtl-ie6.css
   frontend/print.css
+  print.css
   admin.js
 ]
