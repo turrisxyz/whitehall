@@ -6,33 +6,91 @@
 <%= form_for [:admin, person] do |person_form| %>
   <%= person_form.errors %>
 
-  <fieldset>
-    <%= person_form.check_box :privy_counsellor, label_text: 'Rt Hon?' %>
-    <%= person_form.text_field :title %>
-    <%= person_form.text_field :forename %>
-    <%= person_form.text_field :surname %>
-    <%= person_form.text_field :letters %>
-  </fieldset>
-  <fieldset class="image">
-    <%= person_form.label :image, 'Image' %>
-    <% if person.image_url %>
-      <%= image_tag person.image_url %>
-    <% end %>
-    <div class="form-group">
-      <%= person_form.file_field :image %>
-    </div>
-  </fieldset>
-  <fieldset>
-    <%= person_form.text_area :biography, rows: 20, class: "previewable" %>
-  </fieldset>
+  <%= render "govuk_publishing_components/components/checkboxes", {
+    name: "person[privy_counsellor]",
+    items: [
+      {
+        label: "Rt Hon?",
+        value: true,
+        checked: @person.privy_counsellor?,
+      }
+    ]
+  } %>
 
-  <p class="warning">
-    <% if show_instantly_live_warning %>
-      Warning: changes to people appear instantly on the live site.
-    <% end %>
-    <% if show_consult_gds_warning %>
-      Do not create ministerial people without consulting GDS.
-    <% end %>
-  </p>
-  <%= person_form.save_or_cancel cancel: admin_people_path %>
+  <%= render "govuk_publishing_components/components/input", {
+    label: {
+      text: "Title"
+    },
+    name: "person[title]",
+    value: @person.title,
+  } %>
+
+  <%= render "govuk_publishing_components/components/input", {
+    label: {
+      text: "Forename"
+    },
+    name: "person[forename]",
+    value: @person.forename,
+  } %>
+
+  <%= render "govuk_publishing_components/components/input", {
+    label: {
+      text: "Surname"
+    },
+    name: "person[surname]",
+    value: @person.surname,
+  } %>
+
+  <%= render "govuk_publishing_components/components/input", {
+    label: {
+      text: "Letters"
+    },
+    name: "person[letters]",
+    value: @person.letters,
+  } %>
+
+  <% if @person.image_url %>
+    <p class="govuk-body">
+      <%= image_tag @person.image_url %>
+    </p>
+  <% end %>
+
+  <%= render "govuk_publishing_components/components/file_upload", {
+    label: {
+      text: "Image"
+    },
+    name: "person[image]",
+    value: @person.image,
+  } %>
+
+  <%= render "govuk_publishing_components/components/textarea", {
+    label: {
+      text: "Biography"
+    },
+    name: "person[biography]",
+    value: @person.biography,
+    rows: 20
+  } %>
+
+  <% if show_instantly_live_warning %>
+    <%= render "govuk_publishing_components/components/inset_text", {
+      text: "Warning: changes to people appear instantly on the live site."
+    } %>
+  <% end %>
+
+  <% if show_consult_gds_warning %>
+  <%= render "govuk_publishing_components/components/inset_text", {
+    text: "Do not create ministerial people without consulting GDS."
+  } %>
+  <% end %>
+
+  <%= render "govuk_publishing_components/components/button", {
+    text: "Submit"
+  } %>
+
+  <%= render "govuk_publishing_components/components/button", {
+    text: "Cancel",
+    secondary_quiet: true,
+    href: admin_people_path
+  } %>
 <% end %>

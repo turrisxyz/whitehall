@@ -2,6 +2,8 @@ class Admin::PeopleController < Admin::BaseController
   before_action :load_person, only: %i[show edit update destroy]
   before_action :enforce_permissions!, only: %i[edit update destroy]
 
+  layout "admin_layout"
+
   def index
     @people = Person.order(:surname, :forename).includes(:translations)
   end
