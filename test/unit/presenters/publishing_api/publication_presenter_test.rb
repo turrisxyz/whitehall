@@ -150,12 +150,22 @@ class PublishingApi::PublicationPresenterTest < ActiveSupport::TestCase
     assert_equal [location.content_id], presented_item.content[:links][:world_locations]
   end
 
-  test "documents include the alternative format contact email" do
-    publication = create(:publication, :with_command_paper)
+  test "documents include the alternative format contact email with a direct email link" do
+    GovukPublishingComponents::Presenters::Attachment.stubs(:EMAILS_IN_ACCESSIBLE_FORMAT_REQUEST_PILOT).returns([])
+    publication = create(:publication)
     presented_item = present(publication)
     document = presented_item.content[:details][:documents].first
     assert document.include?("This file may not be suitable for users of assistive technology.")
     assert document.include?("mailto:#{publication.alternative_format_provider.alternative_format_contact_email}")
+  end
+
+  test "documents belonging to organisations in the accessible format request pilot include the form link" do
+    email_address = publication.alternative_format_provider.alternative_format_contact_email
+    GovukPublishingComponents::Presenters::Attachment.stubs(:EMAILS_IN_ACCESSIBLE_FORMAT_REQUEST_PILOT).returns([email_address])
+    presented_item = present(publication)
+    document = presented_item.content[:details][:documents].first
+    assert document.include?("Request an accessible format of this document")
+    assert document.include?("/contact/govuk/request-accessible-format?content_id=#{publication.content_id}&amp;attachment_id=#{publication.attachments.first.id}")
   end
 
   test "it uses the PayloadBuilder::FirstPublishedAt helper" do
