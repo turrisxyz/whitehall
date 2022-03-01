@@ -1,3 +1,5 @@
+require "govuk_publishing_components/presenters/attachment"
+
 module AttachmentsHelper
   def default_url_options
     { host: Plek.new.website_root, protocol: "https" }
