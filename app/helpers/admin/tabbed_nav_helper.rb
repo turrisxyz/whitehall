@@ -33,13 +33,10 @@ module Admin::TabbedNavHelper
 
   def tab_navigation(tabs, *extra_classes, &block)
     tabs = tab_navigation_header(tabs)
-    tag.div(class: ["tabbable", *extra_classes]) do
-      if block_given?
-        tabs + tag.div(class: "tab-content", &block)
-      else
-        tabs
-      end
-    end
+    body = block_given? ? tag.div(&block) : ""
+    tag.nav(class: ["app-c-secondary-navigation", *extra_classes]) do
+      tabs
+    end + body
   end
 
   def tab_dropdown(label, menu_items)
@@ -64,12 +61,16 @@ module Admin::TabbedNavHelper
   end
 
   def tab_navigation_header(tabs)
-    tag.ul(class: %w[nav nav-tabs add-bottom-margin]) do
+    tag.ul(class: %w[app-c-secondary-navigation__list]) do
       tabs.map { |label, content|
         if content.is_a?(Hash)
           tab_dropdown(label, content)
         else
-          tag.li(link_to(label, content), class: class_for_tab(content))
+          active = request.path == content
+          tag.li(
+            link_to(label, content, class: %w[govuk-link govuk-link--no-visited-state]),
+            class: %w[app-c-secondary-navigation__list-item] + (active ? %w[app-c-secondary-navigation__list-item--current] : [])
+          )
         end
       }.join.html_safe
     end

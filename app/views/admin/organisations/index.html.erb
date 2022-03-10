@@ -1,33 +1,34 @@
-<% page_title "Organisations" %>
-<h1>Organisations</h1>
+<% content_for :title, "Organisations" %>
 
 <% if can?(:create, Organisation) %>
-  <%= link_to "Create organisation", new_admin_organisation_path, class: "btn btn-default new_resource add-top-margin", title: "Create an organisation" %>
+  <%= render "govuk_publishing_components/components/button", {
+    text: "Create organisation",
+    href: new_admin_organisation_path
+  } %>
 <% end %>
 
-<table class="organisations table table-striped table-bordered add-top-margin">
-  <thead>
-    <tr class="table-header">
-      <th width="10%">Acronym</th>
-      <th width="30%">Name</th>
-      <th width="30%">Type</th>
-      <th width="15%">Status</th>
-      <th width="15%">Link</th>
-    </tr>
-  </thead>
-  <tbody>
+<%= GovukPublishingComponents::AppHelpers::TableHelper.helper(self, "Organisations list", { caption_classes: "govuk-visually-hidden" }) do |t| %>
+  <%= t.head do %>
+    <%= t.header "Acrnoym" %>
+    <%= t.header "Name" %>
+    <%= t.header "Type" %>
+    <%= t.header "Status" %>
+    <%= t.header "Link" %>
+  <% end %>
+
+  <%= t.body do %>
     <% if @user_organisation %>
       <%= render partial: 'organisation_row',
-                locals: { organisation: @user_organisation, prefix: 'user' } %>
+                locals: { organisation: @user_organisation, prefix: 'user', table: t } %>
     <% end %>
     <% @organisations.each do |organisation| %>
       <%= render partial: 'organisation_row',
-                locals: { organisation: organisation } %>
+                locals: { organisation: organisation, table: t } %>
     <% end %>
     <% if @organisations.empty? %>
-      <tr>
-        <td colspan="3">No organisation have been created.</td>
-      </tr>
+      <%= t.row do %>
+        <td class="govuk-table__cell colspan="5">No organisations have been created.</td>
+      <% end %>
     <% end %>
-  </tbody>
-</table>
+  <% end %>
+<% end %>

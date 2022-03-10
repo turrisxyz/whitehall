@@ -2,13 +2,13 @@
   documents ||= []
 %>
 <% if documents.nil? || documents.empty? %>
-  <p class="govuk-body">No <%= title %></p>
+  <p>No <%= title %></p>
 <% else %>
-  <ol class="govuk-list">
+  <ol class="document-list list-unstyled">
     <% documents.each do |edition| %>
       <%= content_tag_for(:li, edition, class: 'document-row') do %>
-        <h3><%= link_to edition.title, admin_edition_path(edition), class: "govuk-link" %></h3>
-        <ul class="govuk-list govuk-list--bullet">
+        <h3 class="add-label-margin"><%= link_to edition.title, admin_edition_path(edition) %></h3>
+        <ul class="attributes list-unstyled list-inline text-muted">
           <li class="updated-by">Updated <%= time_ago_in_words edition.updated_at %> ago by <%= linked_author(edition.last_author, class: 'link-muted') %></li>
           <li class="type"><%= edition.type.titleize %></li>
           <% if edition.force_published? %>

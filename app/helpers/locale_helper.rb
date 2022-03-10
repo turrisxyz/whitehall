@@ -11,7 +11,10 @@ module LocaleHelper
   end
 
   def options_for_foreign_language_locale(edition)
-    options = [["Choose foreign language...", nil]] + options_for_locales(Locale.non_english)
-    options_for_select(options, edition.non_english_edition? ? edition.primary_locale : nil)
+    options = Locale.non_english.map do |locale|
+      locale = Locale.coerce(locale)
+      { text: locale.native_and_english_language_name, value: locale.code.to_s, checked: edition.primary_locale == locale.code.to_s }
+    end
+    [{ text: "Choose foreign language...", value: nil }] + options
   end
 end

@@ -1,18 +1,24 @@
 <% if edition.locale_can_be_changed? %>
-  <fieldset class="foreign-language">
-    <div class="checkbox">
-      <%= label_tag :create_foreign_language_only, nil, class: [:checkbox, "js-toggle-scheduled-publication-date-picker"] do %>
-        <%= check_box_tag :create_foreign_language_only, "1", form.object.primary_locale != "en" %> <%="Create a foreign language only #{edition.model_name.human.downcase}"%>
-      <% end %>
-    </div>
-    <div class="form-group foreign-language-select js-hidden">
-      <%= form.label :primary_locale, 'Document language' %>
-      <div class="form-inline add-label-margin">
-        <%= form.select :primary_locale, options_for_foreign_language_locale(edition), {}, {class: 'form-control input-md-6'} %>
-      </div>
-      <% if edition.is_a?(NewsArticle) %>
-        <p class="warning">Warning: News stories without an English version cannot have other translations.</p>
-      <% end %>
-    </div>
-  </fieldset>
+  <%= render "govuk_publishing_components/components/checkboxes", {
+    name: "edition[create_foreign_language_only]",
+    items: [
+      {
+        label: "Create a foreign language only #{edition.model_name.human.downcase}",
+        value: "1",
+        checked: edition.primary_locale != "en"
+      }
+    ]
+  } %>
+
+  <%= render "govuk_publishing_components/components/select", {
+    # doesn't seem to support a bold label
+    label: "Document language",
+    id: "primary_locale",
+    name: "edition[primary_locale]",
+    error: edition.errors[:primary_locale].first, # this component lacks support for multiple errors
+    options: options_for_foreign_language_locale(edition),
+  } %>
+  <% if edition.is_a?(NewsArticle) %>
+    <p class="govuk-body">Warning: News stories without an English version cannot have other translations.</p>
+  <% end %>
 <% end %>

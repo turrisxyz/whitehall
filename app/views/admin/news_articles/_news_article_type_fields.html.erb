@@ -1,11 +1,18 @@
-<div class="form-group">
-  <%= form.label :news_article_type_id, 'News article type' %>
-  <%= form.select :news_article_type_id,
-        grouped_options_for_select(news_article_type_options, edition.news_article_type_id),
-        {},
-        class: ['chzn-select', 'form-control', 'subtype'],
-        data: {
-          placeholder: "Choose News article type…",
-          :'format-advice' => NewsArticleType::FORMAT_ADVICE
-        } %>
-</div>
+<%
+  # the select component doesn't support options groups like the previous element
+  options = NewsArticleType.all.map do |type|
+    {
+      text: type.singular_name,
+      value: type.id,
+      selected: edition.news_article_type_id == type.id
+    }
+  end
+%>
+<%= render "govuk_publishing_components/components/select", {
+  label: "News article type",
+  id: "news_article_type_id",
+  name: "edition[news_article_type_id]",
+  error: edition.errors[:news_article_type_id].first, # this component lacks support for multiple errors
+  options: [{ text: "Choose News article type...", value: "" }] + options,
+  # hint: NewsArticleType::FORMAT_ADVICE # this is in JSON so not easy to use
+} %>

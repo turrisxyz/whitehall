@@ -1,19 +1,16 @@
 <%
   prefix ||= nil
 %>
-<%= content_tag_for(:tr, organisation, prefix) do %>
-  <td class="acronym">
-    <% if organisation.acronym.present? %>
-      <%= link_to organisation.acronym, admin_organisation_path(organisation), title: "View #{organisation.acronym}" %>
-    <% end %>
-  </td>
-  <td class="name"><%= link_to organisation.name, admin_organisation_path(organisation), title: "View #{organisation.name}" %></td>
-  <td><%= organisation.organisation_type.name %></td>
-  <td><%= organisation.govuk_status %></td>
-  <td>
-    <%= link_to '[gov.uk]', organisation_path(organisation) %>
+<%= table.row do %>
+  <%= table.cell (link_to(organisation.acronym, admin_organisation_path(organisation), title: "View #{organisation.acronym}", class: "govuk-link") if organisation.acronym.present?) %>
+  <%= table.cell link_to(organisation.name, admin_organisation_path(organisation), title: "View #{organisation.name}", class: "govuk-link") %>
+  <%= table.cell organisation.organisation_type.name %>
+  <%= table.cell organisation.govuk_status %>
+  <% links = capture do %>
+    <%= link_to '[gov.uk]', organisation_path(organisation), class: "govuk-link" %>
     <% if organisation.govuk_status != 'live' %>
-      <%= link_to '[current site]', organisation.url %>
+      <%= link_to '[current site]', organisation.url, class: "govuk-link" %>
     <% end %>
-  </td>
+  <% end %>
+  <%= table.cell links %>
 <% end %>

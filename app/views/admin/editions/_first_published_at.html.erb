@@ -1,31 +1,37 @@
 <% if edition.published_major_version.nil? %>
-  <fieldset class="first-published-date well <% if edition.has_previously_published_error %>alert-danger form-errors field_with_errors<% end %>">
-  <p class="required">This document <span>*</span></p>
-  <div class="radio">
-    <%= form.label :previously_published_false, class: 'radio' do %>
-      <%= form.radio_button(:previously_published, false, disabled: edition.imported?) %>
-      has never been published before. It is new.
-    <% end %>
-  </div>
-  <div class="radio">
-    <%= form.label :previously_published_true, class: 'radio' do %>
-      <%= form.radio_button(:previously_published, true, disabled: edition.imported?) %>
-      has previously been published on another website.
-    <% end %>
-  </div>
-  <div class="js-show-first-published show-first-published">
-    <% if edition.imported? %>
-      <%= form.label :first_published_at, "First published <span>*</span>".html_safe, class: 'required' %>
-    <% else %>
-      <%= form.label :first_published_at, "Its original publication date was <span>*</span>".html_safe, class: 'required' %>
-    <% end %>
-    <div class="form-inline">
-      <%= form.datetime_select :first_published_at, { include_blank: true, start_year: Date.today.year, end_year: 1945 }, { class: 'date form-control' } %>
+  <fieldset class="govuk-fieldset first-published-date well <% if edition.has_previously_published_error %>alert-danger form-errors field_with_errors<% end %>">
+    <legend class="govuk-fieldset__legend">Backdating</legend>
+
+    <%= render "govuk_publishing_components/components/radio", {
+      name: "edition[previously_publisher]",
+      heading: "This document",
+      heading_size: "s",
+      items: [
+        {
+          value: false,
+          text: "has never been published before. It is new."
+        },
+        {
+          value: true,
+          text: "has previously been published on another website."
+        },
+      ]
+    } %>
+
+    <%# There isn't a date time select in components gem %>
+    <div class="js-show-first-published show-first-published">
+      <% if edition.imported? %>
+        <%= form.label :first_published_at, "First published <span>*</span>".html_safe, class: 'required' %>
+      <% else %>
+        <%= form.label :first_published_at, "Its original publication date was <span>*</span>".html_safe, class: 'required' %>
+      <% end %>
+      <div class="form-inline">
+        <%= form.datetime_select :first_published_at, { include_blank: true, start_year: Date.today.year, end_year: 1945 }, { class: 'date form-control' } %>
+      </div>
+      <% if !edition.imported? %>
+        <span class="if-js-hide">Only complete this field if the document is not new.</span>
+      <% end %>
     </div>
-    <% if !edition.imported? %>
-      <span class="if-js-hide">Only complete this field if the document is not new.</span>
-    <% end %>
-  </div>
   </fieldset>
 <% else %>
   <fieldset class="first-published-date">

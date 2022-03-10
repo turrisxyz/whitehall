@@ -1,25 +1,65 @@
-<%= content_tag :fieldset, class: ("right-to-left" if edition.rtl?) do %>
-  <%= render "subtype_fields", form: form, edition: form.object %>
-  <%= render "locale_fields", form: form, edition: edition %>
+<%= render "subtype_fields", form: form, edition: form.object %>
+<%= render "locale_fields", form: form, edition: edition %>
 
-  <%= form.hidden_field :lock_version %>
-  <% if form.object.document %>
-  <%= form.text_field :slug, disabled: true %>
-  <% end %>
-  <%= form.text_field :title, required: true %>
-  <div class="title-length-info">Title text should be 65 characters or fewer and the slug will be truncated past 150. <span class="count"></span></div>
+<%= form.hidden_field :lock_version %>
+<% if form.object.document %>
+<%= form.text_field :slug, disabled: true %>
+<% end %>
 
-  <%= form.text_area :summary, rows: 2, class: 'js-summary-length-counting', data: { 'count-message-threshold' => 160, 'count-message-selector' => '.summary-length-info' }, required: form.object.summary_required? %>
-  <div class="summary-length-info">Summary text should be 160 characters or fewer. <span class="count"></span></div>
+<%= render "govuk_publishing_components/components/textarea", {
+  label: {
+    text: "Title",
+    bold: true
+  },
+  id: "edition_title",
+  name: "edition[title]",
+  value: edition.title,
+  error_items: edition.errors[:title].map { |error| { text: error } },
+  rows: 2,
+} do %>
+  <%= render "components/input_length_suggester", {
+    for_id: "edition_title",
+    show_from: 55,
+    message: "Title should be under 65 characters. Current length: {count}",
+  } %>
+<% end %>
 
-  <%= form.text_area :body, class: "previewable", rows: 20, cols: 9000, required: form.object.body_required? %>
+<%= render "govuk_publishing_components/components/textarea", {
+  label: {
+    text: "Summary",
+    bold: true
+  },
+  id: "edition_summary",
+  name: "edition[summary]",
+  value: edition.summary,
+  error_items: edition.errors[:summary].map { |error| { text: error } },
+  rows: 4,
+  maxlength: 160
+} do %>
+  <%= render "components/input_length_suggester", {
+    for_id: "edition_summary",
+    show_from: 120,
+    message: "Summary should be under 160 characters. Current length: {count}",
+  } %>
+<% end %>
 
-  <%= render partial: "additional_significant_fields", locals: {form: form, edition: form.object} %>
+<%= render "govuk_publishing_components/components/textarea", {
+  label: {
+    text: "Body",
+    bold: true
+  },
+  id: "edition_body",
+  name: "edition[body]",
+  value: edition.body,
+  error_items: edition.errors[:body].map { |error| { text: error } },
+  rows: 20
+} %>
 
-  <% if (edition.document and edition.document.published?) and can?(:mark_political, edition) %>
-    <%= form.check_box :political, label_text: "Associate with government of the time (currently set to #{edition.government&.name}).", class: 'political-status' %>
-    <p><a href='https://www.gov.uk/guidance/how-to-publish-on-gov-uk/creating-and-updating-pages#history-mode'>Read the history mode guidance</a> for more information as to what this means.</p>
-  <% end %>
+<%= render partial: "additional_significant_fields", locals: {form: form, edition: form.object} %>
+
+<% if (edition.document and edition.document.published?) and can?(:mark_political, edition) %>
+  <%= form.check_box :political, label_text: "Associate with government of the time (currently set to #{edition.government&.name}).", class: 'political-status' %>
+  <p class="govuk-body"><a href='https://www.gov.uk/guidance/how-to-publish-on-gov-uk/creating-and-updating-pages#history-mode' class="govuk-link">Read the history mode guidance</a> for more information as to what this means.</p>
 <% end %>
 
 <%= render partial: 'first_published_at', locals: { form: form, edition: edition } %>
