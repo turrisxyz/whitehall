@@ -76,3 +76,11 @@ ActiveRecord::PendingMigrationError Migrations are pending. To resolve this issu
 
 Solution:
 `govuk-docker-run bundle exec rake db:migrate` / `govuk-docker-run rake db:migrate`
+
+---
+
+[Remove all unused containers, networks, images (both dangling and unreferenced), and optionally, volumes.](https://docs.docker.com/engine/reference/commandline/system_prune/)
+
+```
+docker system prune --all --volumes
+```
