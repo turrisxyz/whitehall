@@ -15,6 +15,18 @@ require "rails/test_unit/railtie"
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
+# What breaks if I do this? 🐵
+module Globalize
+  module ActiveRecord
+    module InstanceMethods
+      def attributes # rubocop:disable Lint/UselessMethodDefinition
+        # super.merge(translated_attributes)
+        super
+      end
+    end
+  end
+end
+
 module Whitehall
   class Application < Rails::Application
     # Settings in config/environments/* take precedence over those specified here.
