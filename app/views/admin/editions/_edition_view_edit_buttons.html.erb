@@ -9,6 +9,28 @@
     <%= link_to "Preview on website", preview_document_url(@edition), class: 'btn btn-lg btn-primary preview_version', target: '_blank' %>
   <% end %>
 
+  <%
+  utm_uri = edition_preview_url(@edition)
+  %>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <%= render "govuk_publishing_components/components/details", title: "Share document preview for fact check or approval" do %>
+        <%= render "govuk_publishing_components/components/copy_to_clipboard",
+          label: "Send this link to someone so they can see a preview of how the document will appear on GOV.UK. No password is needed.",
+          copyable_content: utm_uri.to_s,
+          button_text: "Copy link",
+          button_data_attributes: {
+            gtm: "copy-url-for-preview"
+          },
+          input_data_attributes: {
+            gtm: "url-for-preview-input",
+            "gtm-copy-paste-tracking": true
+          }
+        %>
+      <% end %>
+    </div>
+  </div>
+
   <% if @edition.editable? %>
     <%= edit_edition_button(@edition) %>
   <% elsif @edition.is_latest_edition? and @edition.published? %>

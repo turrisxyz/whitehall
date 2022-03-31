@@ -33,6 +33,7 @@ class Edition < ApplicationRecord
   include Searchable
   include LockedDocumentConcern
 
+  attribute :auth_bypass_id, default: -> { SecureRandom.uuid }
   has_many :editorial_remarks, dependent: :destroy
   has_many :edition_authors, dependent: :destroy
   has_many :authors, through: :edition_authors, source: :user
@@ -695,6 +696,19 @@ EXISTS (
 
   def has_legacy_tags?
     has_primary_sector? || has_secondary_sectors?
+  end
+
+  def auth_bypass_token
+    JWT.encode(
+      {
+        "sub" => auth_bypass_id,
+        "content_id" => content_id,
+        "iat" => Time.zone.now.to_i,
+        "exp" => 1.month.from_now.to_i,
+      },
+      Rails.application.secrets.jwt_auth_secret,
+      "HS256",
+    )
   end
 
   delegate :locked?, to: :document
