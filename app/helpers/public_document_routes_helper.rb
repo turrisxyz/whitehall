@@ -47,6 +47,11 @@ module PublicDocumentRoutesHelper
     document_url(edition, options)
   end
 
+  def preview_document_url_with_auth_bypass_token(edition, options = {})
+    params = { token: edition.auth_bypass_token }.to_query
+    "#{preview_document_url(edition, options)}?#{params}"
+  end
+
   def organisation_url(slug_or_organisation, options = {})
     organisation_or_court = case slug_or_organisation
                             when String

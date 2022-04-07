@@ -28,6 +28,7 @@ class PublishingApi::CaseStudyPresenterTest < ActiveSupport::TestCase
       ],
       update_type: "major",
       redirects: [],
+      auth_bypass_ids: %w[14e286fd-38ea-4f54-8c0e-df8fc6a37a38],
       details: {
         body: "<div class=\"govspeak\"><p>Some content</p></div>",
         format_display_type: "case_study",
