@@ -3,3 +3,4 @@
 //= link_directory ../stylesheets/frontend .css
 //= link application.js
 //= link admin.js
+//= link all.js
