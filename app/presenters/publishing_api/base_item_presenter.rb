@@ -18,6 +18,7 @@ module PublishingApi
         publishing_app: "whitehall",
         redirects: [],
         update_type: update_type,
+        auth_bypass_ids: [item.auth_bypass_id],
       }
     end
   end
